@@ -14,10 +14,9 @@ const crearToken = (usuario, palabra, expiresIn) => {
 //resolvers
 const resolvers = {
     Query: {
-        obtenerUsuario :async (_, { token }) => {
-            const usuarioID = jwt.verify(token, process.env.SECRETA)
+        obtenerUsuario :async (_, { }, ctx) => {
 
-            return usuarioID
+            return ctx.usuario
         },
         obtenerProductos : async () => {
 
@@ -62,6 +61,7 @@ const resolvers = {
             //revisar si el cliente existe o  no
 
             const cliente = await Cliente.findById(id);
+            console.log(cliente)
 
             if(!cliente){
                 throw new Error('Cliente no encontrado')
@@ -267,11 +267,12 @@ const resolvers = {
             const {email} = input
 
             //verificar si existe
-            const cliente = await Cliente.findOne({ email })
+            const existeCliente = await Cliente.findOne({ email })
 
-            if(cliente){
-                throw new error('Cliente ya esta registrado')
+            if(existeCliente){
+                throw new Error('El cliente ya esta Registrado')
             }
+
 
             const nuevoCliente = new Cliente(input)
 
